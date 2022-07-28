@@ -1,0 +1,607 @@
+
+R version 4.2.1 (2022-06-23 ucrt) -- "Funny-Looking Kid"
+Copyright (C) 2022 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(plm)
+> install.packages("plm")
+Error in install.packages : Updating loaded packages
+> setwd("C://Users//proma.gupta//Desktop//jupyter_practice//Panel Data")
+> a1<-read.csv("C://Users//proma.gupta//Desktop//jupyter_practice//Panel Data//Bank-5.csv")
+
+Restarting R session...
+
+> install.packages("plm")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.2/plm_2.6-1.zip'
+Content type 'application/zip' length 2194817 bytes (2.1 MB)
+downloaded 2.1 MB
+
+package ‘plm’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\proma.gupta\AppData\Local\Temp\RtmpcnlJi0\downloaded_packages
+> #data
+> pdata = pdata.frame(a1, index = c("ID","Year"))
+Error in pdata.frame(a1, index = c("ID", "Year")) : 
+  could not find function "pdata.frame"
+> setwd("C://Users//proma.gupta//Desktop//jupyter_practice//Panel Data")
+> a1<-read.csv("C://Users//proma.gupta//Desktop//jupyter_practice//Panel Data//Bank-5.csv")
+> #data
+> pdata = pdata.frame(a1, index = c("ID","Year"))
+Error in pdata.frame(a1, index = c("ID", "Year")) : 
+  could not find function "pdata.frame"
+> library(plm)
+> setwd("C://Users//proma.gupta//Desktop//jupyter_practice//Panel Data")
+> a1<-read.csv("C://Users//proma.gupta//Desktop//jupyter_practice//Panel Data//Bank-5.csv")
+> #data
+> pdata = pdata.frame(a1, index = c("ID","Year"))
+> ####MAIN CODE
+> pooledmethod=plm(roe~ta+ffr+cc+lf, data=pdata, model = "pooling")
+> summary(pooledmethod)
+Pooling Model
+
+Call:
+plm(formula = roe ~ ta + ffr + cc + lf, data = pdata, model = "pooling")
+
+Balanced Panel: n = 20, T = 18, N = 360
+
+Residuals:
+     Min.   1st Qu.    Median   3rd Qu.      Max. 
+-0.784455 -0.014117  0.010901  0.033416  0.229778 
+
+Coefficients:
+               Estimate  Std. Error t-value  Pr(>|t|)    
+(Intercept)  0.09955862  0.01158802  8.5915 2.759e-16 ***
+ta           0.07503841  0.03344126  2.2439  0.025456 *  
+ffr          0.01986308  0.00610849  3.2517  0.001257 ** 
+cc          -0.48124773  0.18986529 -2.5347  0.011684 *  
+lf           0.00227542  0.00055498  4.1000 5.125e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Total Sum of Squares:    2.5865
+Residual Sum of Squares: 2.282
+R-Squared:      0.11773
+Adj. R-Squared: 0.10779
+F-statistic: 11.8432 on 4 and 355 DF, p-value: 4.8343e-09
+> ##ta, cc, lf, roe
+> ##fixed method
+> femethod=plm(roe~ta+ffr+cc+lf, data=pdata, model = "within")
+> summary(femethod)
+Oneway (individual) effect Within Model
+
+Call:
+plm(formula = roe ~ ta + ffr + cc + lf, data = pdata, model = "within")
+
+Balanced Panel: n = 20, T = 18, N = 360
+
+Residuals:
+      Min.    1st Qu.     Median    3rd Qu.       Max. 
+-0.7149631 -0.0200149  0.0032843  0.0333176  0.2992698 
+
+Coefficients:
+       Estimate  Std. Error t-value  Pr(>|t|)    
+ta   0.07503841  0.03239047  2.3167 0.0211220 *  
+ffr  0.01986308  0.00591655  3.3572 0.0008776 ***
+cc  -0.48124773  0.18389934 -2.6169 0.0092740 ** 
+lf   0.00227542  0.00053754  4.2330 2.979e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Total Sum of Squares:    2.3308
+Residual Sum of Squares: 2.0263
+R-Squared:      0.13065
+Adj. R-Squared: 0.071143
+F-statistic: 12.6241 on 4 and 336 DF, p-value: 1.3974e-09
+> ##random method
+> remethod=plm(roe~ta+ffr+cc+lf, data=pdata, model = "random")
+> summary(remethod)
+Oneway (individual) effect Random Effect Model 
+   (Swamy-Arora's transformation)
+
+Call:
+plm(formula = roe ~ ta + ffr + cc + lf, data = pdata, model = "random")
+
+Balanced Panel: n = 20, T = 18, N = 360
+
+Effects:
+                    var   std.dev share
+idiosyncratic 0.0060305 0.0776564 0.936
+individual    0.0004127 0.0203160 0.064
+theta: 0.3306
+
+Residuals:
+      Min.    1st Qu.     Median    3rd Qu.       Max. 
+-0.7614778 -0.0129411  0.0089546  0.0352973  0.2527550 
+
+Coefficients:
+               Estimate  Std. Error z-value  Pr(>|z|)    
+(Intercept)  0.09955862  0.01210838  8.2223 < 2.2e-16 ***
+ta           0.07503841  0.03239047  2.3167 0.0205211 *  
+ffr          0.01986308  0.00591655  3.3572 0.0007873 ***
+cc          -0.48124773  0.18389934 -2.6169 0.0088730 ** 
+lf           0.00227542  0.00053754  4.2330 2.306e-05 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Total Sum of Squares:    2.4454
+Residual Sum of Squares: 2.1408
+R-Squared:      0.12453
+Adj. R-Squared: 0.11467
+Chisq: 50.4965 on 4 DF, p-value: 2.844e-10
+> ##Poolabilty Test
+> #null: pooled ols is stable
+> pooltest(roe~ta+ffr+cc+lf, data=pdata, model = "within")
+
+	F statistic
+
+data:  roe ~ ta + ffr + cc + lf
+F = 0.69913, df1 = 76, df2 = 260, p-value = 0.9671
+alternative hypothesis: unstability
+
+> ##as p is NOT less than 5%, pooled ols is stable here
+> 
+> ##Pooled vs Fixed
+> # Null: Pooled is consistent
+> # Alter: Fixed is consistent
+> pFtest(femethod,pooledmethod)
+
+	F test for individual effects
+
+data:  roe ~ ta + ffr + cc + lf
+F = 2.2319, df1 = 19, df2 = 336, p-value = 0.002464
+alternative hypothesis: significant effects
+
+> ## ##as p is less than 5%, pooled ols is unstable here and Fixed effect model is consistent
+> 
+> ##Hausman Test
+> 
+> # Null: Random is consistent
+> # Alter: Fixed is constant
+> phtest(femethod,remethod)
+
+	Hausman Test
+
+data:  roe ~ ta + ffr + cc + lf
+chisq = 7.4739e-14, df = 4, p-value = 1
+alternative hypothesis: one model is inconsistent
+
+> ##we can say out of both, random is more consistent
+> 
+> ##Panel Unit Root Testing, null is that the variable is non stationary
+> w = data.frame(split(pdata$roe, pdata$ID))
+> purtest(w, pmax=2,exo="intercept", test = "levinlin" )
+
+	Levin-Lin-Chu Unit-Root Test (ex. var.: Individual Intercepts)
+
+data:  w
+z = -6.5752, p-value = 2.429e-11
+alternative hypothesis: stationarity
+
+Warning message:
+In selectT(l, theTs) : the time series is short
+> 
+> w = data.frame(split(pdata$roe, pdata$ID))
+> purtest(w, pmax=2,exo="intercept", test = "levinlin" )
+
+	Levin-Lin-Chu Unit-Root Test (ex. var.: Individual Intercepts)
+
+data:  w
+z = -6.5752, p-value = 2.429e-11
+alternative hypothesis: stationarity
+
+Warning message:
+In selectT(l, theTs) : the time series is short
+> 
+> w = data.frame(split(pdata$ta, pdata$ID))
+> purtest(w, pmax=2,exo="intercept", test = "levinlin" )
+
+	Levin-Lin-Chu Unit-Root Test (ex. var.: Individual Intercepts)
+
+data:  w
+z = -17.365, p-value < 2.2e-16
+alternative hypothesis: stationarity
+
+Warning message:
+In selectT(l, theTs) : the time series is short
+> 
+> w = data.frame(split(pdata$cc, pdata$ID))
+> purtest(w, pmax=2,exo="intercept", test = "levinlin" )
+
+	Levin-Lin-Chu Unit-Root Test (ex. var.: Individual Intercepts)
+
+data:  w
+z = -12.616, p-value < 2.2e-16
+alternative hypothesis: stationarity
+
+Warning message:
+In selectT(l, theTs) : the time series is short
+> 
+> w = data.frame(split(pdata$ffr, pdata$ID))
+> purtest(w, pmax=2,exo="intercept", test = "levinlin" )
+
+	Levin-Lin-Chu Unit-Root Test (ex. var.: Individual Intercepts)
+
+data:  w
+z = -13.005, p-value < 2.2e-16
+alternative hypothesis: stationarity
+
+Warning message:
+In selectT(l, theTs) : the time series is short
+> 
+> w = data.frame(split(pdata$lf, pdata$ID))
+> purtest(w, pmax=2,exo="intercept", test = "levinlin" )
+
+	Levin-Lin-Chu Unit-Root Test (ex. var.: Individual Intercepts)
+
+data:  w
+z = -7.543, p-value = 2.296e-14
+alternative hypothesis: stationarity
+
+Warning message:
+In selectT(l, theTs) : the time series is short
+> #Durbin Watson for Autocorrelation;Null: there is no autocorrelation
+> 
+> pdwtest(roe~ta+ffr+cc+lf, data=pdata, model = "random")
+
+	Durbin-Watson test for serial correlation in panel models
+
+data:  roe ~ ta + ffr + cc + lf
+DW = 0.85283, p-value < 2.2e-16
+alternative hypothesis: serial correlation in idiosyncratic errors
+
+> # The error term generated from random effect has autocorrelation problem of serial correlation
+> 
+> ####Homoscedasticity Test: Null-there is homoskedasticity
+> ####Homoscedasticity Test: Null-there is homoskedasticity
+> library(lmtest)
+Loading required package: zoo
+
+Attaching package: ‘zoo’
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+> library(zoo)
+> bptest(roe~ta+ffr+cc+lf, data=pdata, studentize = F)
+
+	Breusch-Pagan test
+
+data:  roe ~ ta + ffr + cc + lf
+BP = 31.299, df = 4, p-value = 2.661e-06
+
+> pdwtest(roe~ta+ffr+cc+lf, data=pdata, model = "random")
+
+	Durbin-Watson test for serial correlation in panel models
+
+data:  roe ~ ta + ffr + cc + lf
+DW = 0.85283, p-value < 2.2e-16
+alternative hypothesis: serial correlation in idiosyncratic errors
+
+> pdwtest(roe~ta+ffr+cc+lf, data=pdata, model = "random")
+
+	Durbin-Watson test for serial correlation in panel models
+
+data:  roe ~ ta + ffr + cc + lf
+DW = 0.85283, p-value < 2.2e-16
+alternative hypothesis: serial correlation in idiosyncratic errors
+
+> ####Homoscedasticity Test: Null-there is homoskedasticity
+> library(lmtest)
+> ####Homoscedasticity Test: Null-there is homoskedasticity
+> library(lmtest)
+> #install.packages("zoo")
+> bptest(roe~ta+ffr+cc+lf, data=pdata, studentize = F)
+
+	Breusch-Pagan test
+
+data:  roe ~ ta + ffr + cc + lf
+BP = 31.299, df = 4, p-value = 2.661e-06
+
+> ##There is no homoscedasticity
+> 
+> ###Controlling of Heteroscedasticity and autocorrelation of Panel Data###
+> 
+> #for the fixed effect effect model:
+> library(sandwich)
+> coeftest(femethod,vcovHC(femethod,method = "arellano"))
+
+t test of coefficients:
+
+       Estimate  Std. Error t value  Pr(>|t|)    
+ta   0.07503841  0.02204647  3.4036 0.0007453 ***
+ffr  0.01986308  0.00328144  6.0532 3.796e-09 ***
+cc  -0.48124773  0.10398156 -4.6282 5.276e-06 ***
+lf   0.00227542  0.00059037  3.8542 0.0001391 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+> #for the random effect effect model
+> coeftest(remethod,vcovHC(remethod,method = "arellano"))
+
+t test of coefficients:
+
+               Estimate  Std. Error t value  Pr(>|t|)    
+(Intercept)  0.09955862  0.00927954 10.7288 < 2.2e-16 ***
+ta           0.07503841  0.02204647  3.4036 0.0007409 ***
+ffr          0.01986308  0.00328144  6.0532 3.613e-09 ***
+cc          -0.48124773  0.10398156 -4.6282 5.179e-06 ***
+lf           0.00227542  0.00059037  3.8542 0.0001378 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+> #####Wooldridge Test for Autocorrelation in Panel Data
+> ##null: There is no autocorrelation
+> pbgtest(femethod)
+
+	Breusch-Godfrey/Wooldridge test for serial correlation in panel models
+
+data:  roe ~ ta + ffr + cc + lf
+chisq = 157.38, df = 18, p-value < 2.2e-16
+alternative hypothesis: serial correlation in idiosyncratic errors
+
+> pbgtest(remethod)
+
+	Breusch-Godfrey/Wooldridge test for serial correlation in panel models
+
+data:  roe ~ ta + ffr + cc + lf
+chisq = 154.8, df = 18, p-value < 2.2e-16
+alternative hypothesis: serial correlation in idiosyncratic errors
+
+> ####ADF TEST, NULL:Non- STATIONARY
+> install.packages("tseries")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.2/tseries_0.10-51.zip'
+Content type 'application/zip' length 378919 bytes (370 KB)
+downloaded 370 KB
+
+package ‘tseries’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\proma.gupta\AppData\Local\Temp\RtmpcnlJi0\downloaded_packages
+> library(tseries)
+Registered S3 method overwritten by 'quantmod':
+  method            from
+  as.zoo.data.frame zoo 
+
+    ‘tseries’ version: 0.10-51
+
+    ‘tseries’ is a package for time series analysis and computational finance.
+
+    See ‘library(help="tseries")’ for details.
+
+> adf.test(pdata$roe)
+
+	Augmented Dickey-Fuller Test
+
+data:  pdata$roe
+Dickey-Fuller = -7.2097, Lag order = 7, p-value = 0.01
+alternative hypothesis: stationary
+
+Warning message:
+In adf.test(pdata$roe) : p-value smaller than printed p-value
+> adf.test(pdata$ta)
+
+	Augmented Dickey-Fuller Test
+
+data:  pdata$ta
+Dickey-Fuller = -8.5625, Lag order = 7, p-value = 0.01
+alternative hypothesis: stationary
+
+Warning message:
+In adf.test(pdata$ta) : p-value smaller than printed p-value
+> adf.test(pdata$cc)
+
+	Augmented Dickey-Fuller Test
+
+data:  pdata$cc
+Dickey-Fuller = -9.4794, Lag order = 7, p-value = 0.01
+alternative hypothesis: stationary
+
+Warning message:
+In adf.test(pdata$cc) : p-value smaller than printed p-value
+> adf.test(pdata$lf)
+
+	Augmented Dickey-Fuller Test
+
+data:  pdata$lf
+Dickey-Fuller = -9.7392, Lag order = 7, p-value = 0.01
+alternative hypothesis: stationary
+
+Warning message:
+In adf.test(pdata$lf) : p-value smaller than printed p-value
+> adf.test(pdata$ffr)
+
+	Augmented Dickey-Fuller Test
+
+data:  pdata$ffr
+Dickey-Fuller = -9.984, Lag order = 7, p-value = 0.01
+alternative hypothesis: stationary
+
+Warning message:
+In adf.test(pdata$ffr) : p-value smaller than printed p-value
+> ##as p is 0.01, roe, ta, ffr, cc, lf are stationary
+> ###SUR
+> library(systemfit)
+Loading required package: Matrix
+Loading required package: car
+Loading required package: carData
+
+Please cite the 'systemfit' package as:
+Arne Henningsen and Jeff D. Hamann (2007). systemfit: A Package for Estimating Systems of Simultaneous Equations in R. Journal of Statistical Software 23(4), 1-40. http://www.jstatsoft.org/v23/i04/.
+
+If you have questions, suggestions, or comments regarding the 'systemfit' package, please use a forum or 'tracker' at systemfit's R-Forge site:
+https://r-forge.r-project.org/projects/systemfit/
+> library(systemfit)
+> library(lmtest)
+> library(zoo)
+> library(Matrix)
+> library(car)
+> library(carData)
+
+Warning message:
+In adf.test(pdata$ffr) : p-value smaller than printed p-value
+> ##as p is 0.01, roe, ta, ffr, cc, lf are stationary
+> ###SUR
+> library(systemfit)
+Loading required package: Matrix
+Loading required package: car
+Loading required package: carData
+
+Please cite the 'systemfit' package as:
+Arne Henningsen and Jeff D. Hamann (2007). systemfit: A Package for Estimating Systems of Simultaneous Equations in R. Journal of Statistical Software 23(4), 1-40. http://www.jstatsoft.org/v23/i04/.
+
+If you have questions, suggestions, or comments regarding the 'systemfit' package, please use a forum or 'tracker' at systemfit's R-Forge site:
+https://r-forge.r-project.org/projects/systemfit/
+> library(systemfit)
+> library(lmtest)
+> library(zoo)
+> library(Matrix)
+> library(car)
+> library(carData)
+> library(systemfit)
+> library(lmtest)
+> library(zoo)
+> library(Matrix)
+> library(car)
+> library(carData)
+> sur=systemfit(roe~ta+cc+ffr+lf,method = "SUR", data = pdata)
+Error in .solve.dgC.lu(as(a, "dgCMatrix"), b = b, tol = tol) : 
+  LU computationally singular: ratio of extreme entries in |diag(U)| = 3.869e-20
+> summary(sur)
+Error in h(simpleError(msg, call)) : 
+  error in evaluating the argument 'object' in selecting a method for function 'summary': object 'sur' not found
+> library(plm)
+> pgrangertest(roe~ta,data = pdata)
+
+	Panel Granger (Non-)Causality Test (Dumitrescu/Hurlin (2012))
+
+data:  roe ~ ta
+Ztilde = 3.8334, p-value = 0.0001264
+alternative hypothesis: Granger causality for at least one individual
+
+> pgrangertest(roe~cc,data = pdata)
+
+	Panel Granger (Non-)Causality Test (Dumitrescu/Hurlin (2012))
+
+data:  roe ~ cc
+Ztilde = 1.513, p-value = 0.1303
+alternative hypothesis: Granger causality for at least one individual
+
+> pgrangertest(roe~lf,data = pdata)
+
+	Panel Granger (Non-)Causality Test (Dumitrescu/Hurlin (2012))
+
+data:  roe ~ lf
+Ztilde = 1.7804, p-value = 0.07501
+alternative hypothesis: Granger causality for at least one individual
+
+> pgrangertest(roe~ffr,data = pdata)
+
+	Panel Granger (Non-)Causality Test (Dumitrescu/Hurlin (2012))
+
+data:  roe ~ ffr
+Ztilde = 23.417, p-value < 2.2e-16
+alternative hypothesis: Granger causality for at least one individual
+
+> install.packages("nnet")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.2/nnet_7.3-17.zip'
+Content type 'application/zip' length 122519 bytes (119 KB)
+downloaded 119 KB
+
+package ‘nnet’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\proma.gupta\AppData\Local\Temp\RtmpcnlJi0\downloaded_packages
+> install.packages("mgcv")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.2/mgcv_1.8-40.zip'
+Content type 'application/zip' length 3146341 bytes (3.0 MB)
+downloaded 3.0 MB
+
+package ‘mgcv’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\proma.gupta\AppData\Local\Temp\RtmpcnlJi0\downloaded_packages
+> install.packages("quantreg")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.2/quantreg_5.93.zip'
+Content type 'application/zip' length 1726699 bytes (1.6 MB)
+downloaded 1.6 MB
+
+package ‘quantreg’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\proma.gupta\AppData\Local\Temp\RtmpcnlJi0\downloaded_packages
+> install.packages("systemfit")
+Error in install.packages : Updating loaded packages
+> install.packages("foreign")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.2/foreign_0.8-82.zip'
+Content type 'application/zip' length 277705 bytes (271 KB)
+downloaded 271 KB
+
+package ‘foreign’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\proma.gupta\AppData\Local\Temp\RtmpcnlJi0\downloaded_packages
+> install.packages("car")
+Error in install.packages : Updating loaded packages
+> install.packages("Rcpp")
+Error in install.packages : Updating loaded packages
+> library(foreign)
+> library(systemfit)
+> install.packages("systemfit")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+Warning in install.packages :
+  package ‘systemfit’ is in use and will not be installed
+> install.packages("car")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+Warning in install.packages :
+  package ‘car’ is in use and will not be installed
+
+Restarting R session...
+
+> install.packages("Rcpp")
+WARNING: Rtools is required to build R packages but is not currently installed. Please download and install the appropriate version of Rtools before proceeding:
+
+https://cran.rstudio.com/bin/windows/Rtools/
+trying URL 'https://cran.rstudio.com/bin/windows/contrib/4.2/Rcpp_1.0.8.3.zip'
+Content type 'application/zip' length 2883181 bytes (2.7 MB)
+downloaded 2.7 MB
+
+package ‘Rcpp’ successfully unpacked and MD5 sums checked
+
+The downloaded binary packages are in
+	C:\Users\proma.gupta\AppData\Local\Temp\RtmpoDyYwg\downloaded_packages
